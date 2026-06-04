@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Local STT/ASR MVP</title>
+    <style>
+      body { font-family: Inter, Arial, sans-serif; margin: 24px; max-width: 900px; }
+      h1 { margin-bottom: 4px; }
+      .muted { color: #666; }
+      .row { margin: 12px 0; display: grid; gap: 6px; }
+      input, select, button, textarea { padding: 8px; font-size: 14px; }
+      .actions { display: flex; gap: 10px; }
+      textarea { width: 100%; min-height: 180px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .status { margin-top: 8px; }
+    </style>
+  </head>
+  <body>
+    <h1>Local STT/ASR Benchmark MVP</h1>
+    <p class="muted">Electron prototype for local model testing on macOS/Windows.</p>
+
+    <div class="row">
+      <label for="model">Model</label>
+      <select id="model"></select>
+    </div>
+
+    <div class="row">
+      <label for="audioPath">Audio File</label>
+      <input id="audioPath" type="text" placeholder="Absolute path to audio file" />
+      <button id="pickAudio">Choose Audio File</button>
+    </div>
+
+    <div class="row">
+      <label for="language">Language</label>
+      <input id="language" type="text" value="en" />
+    </div>
+
+    <div class="row">
+      <label for="iterations">Benchmark Iterations</label>
+      <input id="iterations" type="number" min="1" value="3" />
+    </div>
+
+    <div class="row">
+      <label for="duration">Audio Duration (seconds)</label>
+      <input id="duration" type="number" min="1" value="30" />
+    </div>
+
+    <div class="actions">
+      <button id="runTranscribe">Run Transcription</button>
+      <button id="runBenchmark">Run Benchmark</button>
+    </div>
+
+    <p class="status" id="status"></p>
+    <textarea id="output" readonly aria-live="polite"></textarea>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>

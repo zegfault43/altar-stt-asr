@@ -1,0 +1,27 @@
+{
+  "name": "altar-stt-asr",
+  "version": "1.0.0",
+  "description": "Local STT/ASR benchmarking MVP with Electron",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "node --test",
+    "start": "electron .",
+    "benchmark": "node src/cli/benchmark.js",
+    "transcribe": "node src/cli/transcribe.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zegfault43/altar-stt-asr.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/zegfault43/altar-stt-asr/issues"
+  },
+  "homepage": "https://github.com/zegfault43/altar-stt-asr#readme",
+  "devDependencies": {
+    "electron": "^42.3.3"
+  }
+}
