@@ -2,6 +2,8 @@ const fs = require('fs/promises');
 const { spawn } = require('child_process');
 const { resolveRunPlan } = require('./models');
 
+const MOCK_MODEL_LATENCY_MS = 150;
+
 async function fileExists(filePath) {
   try {
     await fs.access(filePath);
@@ -57,7 +59,7 @@ async function runAsrModel({ modelId, audioPath, language = 'en', timeoutMs = 18
   const plan = resolveRunPlan(modelId, audioPath, language);
 
   if (!plan.command) {
-    const elapsedMs = 150;
+    const elapsedMs = MOCK_MODEL_LATENCY_MS;
     return {
       modelId,
       transcript: plan.simulatedTranscript,

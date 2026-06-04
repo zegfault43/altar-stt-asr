@@ -19,7 +19,7 @@ MVP repository for **local STT/ASR model deployment** and benchmarking on edge m
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 22.12.0+
 - npm 10+
 - Python 3.10+ (for Python model adapters)
 - Optional GPU stack (CUDA / ROCm / DirectML) based on selected local model

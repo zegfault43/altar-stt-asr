@@ -18,7 +18,7 @@ test('summarizeBenchmarks computes expected metrics', () => {
   assert.equal(summary.realTimeFactor, 0.025);
 });
 
-test('benchmarkModel executes configured iteration count', async () => {
+test('benchmarkModel executes configured iterations and computes RTF from provided duration', async () => {
   let runs = 0;
   const runFn = async () => {
     runs += 1;
