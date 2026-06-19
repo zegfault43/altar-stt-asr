@@ -3,56 +3,127 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Local STT/ASR MVP</title>
-    <style>
-      body { font-family: Inter, Arial, sans-serif; margin: 24px; max-width: 900px; }
-      h1 { margin-bottom: 4px; }
-      .muted { color: #666; }
-      .row { margin: 12px 0; display: grid; gap: 6px; }
-      input, select, button, textarea { padding: 8px; font-size: 14px; }
-      .actions { display: flex; gap: 10px; }
-      textarea { width: 100%; min-height: 180px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-      .status { margin-top: 8px; }
-    </style>
+    <title>Local STT/ASR</title>
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <h1>Local STT/ASR Benchmark MVP</h1>
-    <p class="muted">Electron prototype for local model testing on macOS/Windows.</p>
+    <div id="app">
+      <h1>Local STT/ASR</h1>
+      <p class="muted">
+        Electron prototype for local model testing on macOS/Windows.
+      </p>
 
-    <div class="row">
-      <label for="model">Model</label>
-      <select id="model"></select>
+      <div class="row">
+        <label for="model">Model</label>
+        <select id="model" v-model="selectedModelId">
+          <option
+            v-for="model in models"
+            :key="model.id"
+            :value="model.id"
+          >{{ model.label }}{{ model.recommended ? ' (recommended)' : '' }}</option>
+        </select>
+      </div>
+
+      <div
+        v-if="selectedModel && selectedModel.setupNote"
+        class="setup-note"
+      >{{ selectedModel.setupNote }}</div>
+
+      <div
+        v-if="selectedModel && selectedModel.requiresConfig === 'voxtralRepo'"
+        class="row"
+      >
+        <label for="voxtral-repo">Voxtral HuggingFace Repo ID</label>
+        <input
+          id="voxtral-repo" v-model="voxtralRepo" type="text"
+          placeholder="e.g. mistralai/Voxtral-S-24B"
+        />
+      </div>
+
+      <div class="recording-controls">
+        <div
+          class="recording-indicator"
+          :class="{ active: isRecording }"
+        ></div>
+        <button @click="startRecording" :disabled="isRecording || isBusy">
+          Start Recording
+        </button>
+        <button @click="stopRecording" :disabled="!isRecording">
+          Stop Recording
+        </button>
+        <span>{{ recordingDuration }}</span>
+      </div>
+
+      <div class="row">
+        <label for="audio-path">Audio File (or use recording above)</label>
+        <input
+          id="audio-path" v-model="audioPath" type="text"
+          placeholder="Absolute path to audio file"
+        />
+        <button @click="pickAudioFile" :disabled="isBusy">
+          Choose Audio File
+        </button>
+      </div>
+
+      <div class="row">
+        <label for="language">Language</label>
+        <select id="language" v-model="language">
+          <option value="en">English (en)</option>
+          <option value="fr">French (fr)</option>
+          <option value="zh">Chinese Simplified (zh)</option>
+        </select>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-nav">
+          <button
+            :class="{ active: activeTab === 'transcription' }"
+            @click="activeTab = 'transcription'"
+          >Transcription</button>
+          <button
+            :class="{ active: activeTab === 'benchmark' }"
+            @click="activeTab = 'benchmark'"
+          >Benchmark</button>
+        </div>
+
+        <div v-if="activeTab === 'transcription'" class="tab-content">
+          <button @click="runTranscription" :disabled="isBusy">
+            Run Transcription
+          </button>
+        </div>
+
+        <div v-if="activeTab === 'benchmark'" class="tab-content">
+          <div class="row">
+            <label for="iterations">Iterations</label>
+            <input
+              id="iterations" v-model.number="iterations"
+              type="number" min="1"
+            />
+          </div>
+          <div class="row">
+            <label for="audio-duration">Audio Duration (seconds)</label>
+            <input
+              id="audio-duration" v-model.number="audioDuration"
+              type="number" min="1"
+            />
+            <p class="hint">
+              Set this to the actual length of your audio file.
+              Used to compute Real-Time Factor
+              (RTF = avg latency / duration). RTF &lt; 1.0 means
+              faster than real-time. Not used in the Transcription tab.
+            </p>
+          </div>
+          <button @click="runBenchmark" :disabled="isBusy">
+            Run Benchmark
+          </button>
+        </div>
+      </div>
+
+      <p class="status">{{ status }}</p>
+      <textarea :value="outputText" readonly aria-live="polite"></textarea>
     </div>
 
-    <div class="row">
-      <label for="audioPath">Audio File</label>
-      <input id="audioPath" type="text" placeholder="Absolute path to audio file" />
-      <button id="pickAudio">Choose Audio File</button>
-    </div>
-
-    <div class="row">
-      <label for="language">Language</label>
-      <input id="language" type="text" value="en" />
-    </div>
-
-    <div class="row">
-      <label for="iterations">Benchmark Iterations</label>
-      <input id="iterations" type="number" min="1" value="3" />
-    </div>
-
-    <div class="row">
-      <label for="duration">Audio Duration (seconds)</label>
-      <input id="duration" type="number" min="1" value="30" />
-    </div>
-
-    <div class="actions">
-      <button id="runTranscribe">Run Transcription</button>
-      <button id="runBenchmark">Run Benchmark</button>
-    </div>
-
-    <p class="status" id="status"></p>
-    <textarea id="output" readonly aria-live="polite"></textarea>
-
+    <script src="../../node_modules/vue/dist/vue.global.js"></script>
     <script src="./renderer.js"></script>
   </body>
 </html>

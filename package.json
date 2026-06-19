@@ -1,11 +1,12 @@
 {
   "name": "altar-stt-asr",
   "version": "1.0.0",
-  "description": "Local STT/ASR benchmarking MVP with Electron",
+  "description": "Local STT/ASR benchmarking with Electron",
   "main": "src/main.js",
   "scripts": {
     "test": "node --test",
-    "start": "electron .",
+    "build-css": "sass src/renderer/styles.scss src/renderer/styles.css --no-source-map",
+    "start": "npm run build-css && electron --force_high_performance_gpu .",
     "benchmark": "node src/cli/benchmark.js",
     "transcribe": "node src/cli/transcribe.js"
   },
@@ -22,6 +23,12 @@
   },
   "homepage": "https://github.com/zegfault43/altar-stt-asr#readme",
   "devDependencies": {
-    "electron": "^42.3.3"
+    "electron": "^42.3.3",
+    "sass": "^1.101.0"
+  },
+  "dependencies": {
+    "fs-extra": "^11.3.5",
+    "lodash": "^4.18.1",
+    "vue": "^3.5.38"
   }
 }

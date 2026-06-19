@@ -1,4 +1,10 @@
 node_modules/
 results/
+output/
 .DS_Store
 *.log
+.github
+temp
+models
+src/renderer/styles.css
+.vscode
